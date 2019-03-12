@@ -161,10 +161,23 @@ int main(int argc, char* argv[])
 					strFileName = root.string() + "US\\US" + to_string(cntImagesNum) + ".jpg";
 					imwrite(strFileName, frame);
 
-					cout << "Images with index " << cntImagesNum << " has been collected" << endl;
+					cout << "+Images with index " << cntImagesNum << " has been collected" << endl;
 				}
+				else if (c == 'd')
+				{
+					strFileName = root.string() + "L\\left" + to_string(cntImagesNum) + ".jpg";
+					remove((path)strFileName);
 
+					strFileName = root.string() + "R\\right" + to_string(cntImagesNum) + ".jpg";
+					remove((path)strFileName);
 
+					strFileName = root.string() + "US\\US" + to_string(cntImagesNum) + ".jpg";
+					remove((path)strFileName);
+
+					cout << "-Images with index " << cntImagesNum << " has been deleted" << endl;
+
+					cntImagesNum--;
+				}
 			}
 		}
 
