@@ -108,7 +108,7 @@ int main(int argc, char* argv[])
 		// Set up format convert to store pylon image as grayscale
 		formatConverter.OutputPixelFormat = PixelType_Mono8;
 		// Set up window to show acquisition
-		namedWindow("Concatenation", WINDOW_NORMAL); resizeWindow("Concatenation", 640 * 3, 512);
+		namedWindow("Acquisition", WINDOW_NORMAL); resizeWindow("Acquisition", 640 * 3, 512);
 		// Start grabbing cameras
 		cameras.StartGrabbing(Pylon::GrabStrategy_LatestImageOnly, Pylon::GrabLoop_ProvidedByUser);
 
@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
 				hconcat(matrices, cat);
 
 				// show images
-				imshow("Concatenation", cat);
+				imshow("Acquisition", cat);
 				char c = waitKey(1);
 
 				if (c == 27)
