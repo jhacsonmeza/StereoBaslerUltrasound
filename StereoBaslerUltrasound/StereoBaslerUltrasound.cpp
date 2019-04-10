@@ -116,8 +116,8 @@ int main(int argc, char* argv[])
 		while (cameras.IsGrabbing())
 		{
 			// Basler frame capture
-			cameras[iR].RetrieveResult(5000, ptrGrabResultL, TimeoutHandling_ThrowException);
-			cameras[iL].RetrieveResult(5000, ptrGrabResultR, TimeoutHandling_ThrowException);
+			cameras[iL].RetrieveResult(5000, ptrGrabResultL, TimeoutHandling_ThrowException);
+			cameras[iR].RetrieveResult(5000, ptrGrabResultR, TimeoutHandling_ThrowException);
 
 			// US frame capture
 			cap.read(frame);
