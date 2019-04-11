@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include <stdexcept>
 
 using namespace Pylon;
 using namespace cv;
@@ -16,6 +17,12 @@ int main(int argc, char* argv[])
 {
 	// Root path to store images
 	path root = "F:\\StereoBaslerUltrasound\\acquisition\\";
+
+	if (!is_directory(root))
+	{
+		if (!create_directory(root))
+			return -1;
+	}
 
 	// If there are no paths to each source, create them
 	if (!is_directory(root / "L"))
