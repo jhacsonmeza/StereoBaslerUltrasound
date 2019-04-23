@@ -83,6 +83,8 @@ int main(int argc, char* argv[])
 		VideoCapture cap(0);
 		if (!cap.isOpened())  // check if we succeeded
 			return -1;
+		cap.set(CAP_PROP_FRAME_WIDTH, 960); //800
+		cap.set(CAP_PROP_FRAME_HEIGHT, 720); // 600
 		cout << endl << endl;
 
 
@@ -95,7 +97,7 @@ int main(int argc, char* argv[])
 		string strFileName; // Filename string of images to store
 
 		CPylonImage imgLeft, imgRight; // pylon images
-		Mat imL, imR, imLrs, imRrs, frame, cat; // OpenCV matrices
+		Mat imL, imR, imLrs, imRrs, frame, framers, cat; // OpenCV matrices
 		vector<Mat> matrices; // vector of Mat for image concatenation
 		CImageFormatConverter formatConverter;
 
@@ -142,11 +144,12 @@ int main(int argc, char* argv[])
 				imR = Mat(ptrGrabResultR->GetHeight(), ptrGrabResultR->GetWidth(), CV_8UC1, (uint8_t *)imgRight.GetBuffer());
 
 				// Resize basler images to US frame
-				resize(imL, imLrs, Size(frame.cols, frame.rows));
-				resize(imR, imRrs, Size(frame.cols, frame.rows));
+				resize(imL, imLrs, Size(640, 480));
+				resize(imR, imRrs, Size(640, 480));
+				resize(frame, framers, Size(640, 480));
 
 				// Concatenate three images
-				matrices = { imLrs, imRrs, frame };
+				matrices = { imLrs, imRrs, framers };
 				hconcat(matrices, cat);
 
 				// show images
