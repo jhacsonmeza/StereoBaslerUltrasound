@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 		cout << endl;
 
 
-		// Create and open the default camera
+		// Create and open object to handle US machine acquisition
 		VideoCapture cap(0);
 		if (!cap.isOpened())  // check if we succeeded
 			return -1;
@@ -91,13 +91,12 @@ int main(int argc, char* argv[])
 		// Variables to use
 		int iR, iL; // Index of cameras
 		CGrabResultPtr ptrGrabResultL, ptrGrabResultR; // Store retrieve result as pointer of both cameras
-		string DeviceSerNum[2]; // Store device serial number
 
 		int cntImagesNum = -1; // Initialize counter of images to store them with index number
 		string strFileName; // Filename string of images to store
 
 		CPylonImage imgLeft, imgRight; // pylon images
-		Mat imL, imR, imLrs, imRrs, frame, framers, cat; // OpenCV matrices
+		Mat imL, imR, imLrs, imRrs, imUS, imUSrs, cat; // OpenCV matrices
 		vector<Mat> matrices; // vector of Mat for image concatenation
 		CImageFormatConverter formatConverter;
 
@@ -105,11 +104,9 @@ int main(int argc, char* argv[])
 		// Check which camera is R and which L to assign the correct camera index
 		for (int i = 0; i < cameras.GetSize(); i++)
 		{
-			DeviceSerNum[i] = cameras[i].GetDeviceInfo().GetSerialNumber();
-
-			if (DeviceSerNum[i] == "22151646")
+			if (cameras[i].GetDeviceInfo().GetSerialNumber() == "22151646")
 				iR = i;
-			else if (DeviceSerNum[i] == "21953150")
+			else if (cameras[i].GetDeviceInfo().GetSerialNumber() == "21953150")
 				iL = i;
 		}
 
@@ -129,11 +126,10 @@ int main(int argc, char* argv[])
 			cameras[iR].RetrieveResult(5000, ptrGrabResultR, TimeoutHandling_ThrowException);
 
 			// US frame capture
-			cap.read(frame);
-			cvtColor(frame, frame, COLOR_BGR2GRAY);
+			cap.read(imUS);
 
 			// If the image was grabbed successfully.
-			if (ptrGrabResultL->GrabSucceeded() && ptrGrabResultR->GrabSucceeded() && !frame.empty())
+			if (ptrGrabResultL->GrabSucceeded() && ptrGrabResultR->GrabSucceeded() && !imUS.empty())
 			{
 				// Convet left image to pylon image and then to Mat
 				formatConverter.Convert(imgLeft, ptrGrabResultL);
@@ -143,13 +139,17 @@ int main(int argc, char* argv[])
 				formatConverter.Convert(imgRight, ptrGrabResultR);
 				imR = Mat(ptrGrabResultR->GetHeight(), ptrGrabResultR->GetWidth(), CV_8UC1, (uint8_t *)imgRight.GetBuffer());
 
-				// Resize basler images to US frame
+				// Convert US image to grayscale
+				cvtColor(imUS, imUS, COLOR_BGR2GRAY);
+
+
+				// Resize basler and US images for visualization purposes
 				resize(imL, imLrs, Size(640, 480));
 				resize(imR, imRrs, Size(640, 480));
-				resize(frame, framers, Size(640, 480));
+				resize(imUS, imUSrs, Size(640, 480));
 
 				// Concatenate three images
-				matrices = { imLrs, imRrs, framers };
+				matrices = { imLrs, imRrs, imUSrs };
 				hconcat(matrices, cat);
 
 				// show images
@@ -169,7 +169,7 @@ int main(int argc, char* argv[])
 					imwrite(strFileName, imR);
 
 					strFileName = root.string() + "US\\US" + to_string(cntImagesNum) + ".jpg";
-					imwrite(strFileName, frame);
+					imwrite(strFileName, imUS);
 
 					cout << "+Images with index " << cntImagesNum << " has been collected" << endl;
 				}
