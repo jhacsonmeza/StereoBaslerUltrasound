@@ -83,8 +83,9 @@ int main(int argc, char* argv[])
 		VideoCapture cap(0);
 		if (!cap.isOpened())  // check if we succeeded
 			return -1;
-		cap.set(CAP_PROP_FRAME_WIDTH, 960); //800
-		cap.set(CAP_PROP_FRAME_HEIGHT, 720); // 600
+		// Set US video resolution
+		cap.set(CAP_PROP_FRAME_WIDTH, 800); // 640 - 800 - 1024
+		cap.set(CAP_PROP_FRAME_HEIGHT, 600); // 480 - 600 - 768
 		cout << endl << endl;
 
 
@@ -96,7 +97,7 @@ int main(int argc, char* argv[])
 		string strFileName; // Filename string of images to store
 
 		CPylonImage imgLeft, imgRight; // pylon images
-		Mat imL, imR, imLrs, imRrs, imUS, imUSrs, cat; // OpenCV matrices
+		Mat imL, imR, imUS, imLrs, imRrs, imUSrs, cat; // OpenCV matrices
 		vector<Mat> matrices; // vector of Mat for image concatenation
 		CImageFormatConverter formatConverter;
 
@@ -114,7 +115,7 @@ int main(int argc, char* argv[])
 		// Set up format convert to store pylon image as grayscale
 		formatConverter.OutputPixelFormat = PixelType_Mono8;
 		// Set up window to show acquisition
-		namedWindow("Acquisition", WINDOW_NORMAL); resizeWindow("Acquisition", 640 * 3, 512);
+		namedWindow("Acquisition", WINDOW_NORMAL); resizeWindow("Acquisition", 620 * 3, 480);
 		// Start grabbing cameras
 		cameras.StartGrabbing(Pylon::GrabStrategy_LatestImageOnly, Pylon::GrabLoop_ProvidedByUser);
 
@@ -144,9 +145,9 @@ int main(int argc, char* argv[])
 
 
 				// Resize basler and US images for visualization purposes
-				resize(imL, imLrs, Size(640, 480));
-				resize(imR, imRrs, Size(640, 480));
-				resize(imUS, imUSrs, Size(640, 480));
+				resize(imL, imLrs, Size(620, 480));
+				resize(imR, imRrs, Size(620, 480));
+				resize(imUS, imUSrs, Size(620, 480));
 
 				// Concatenate three images
 				matrices = { imLrs, imRrs, imUSrs };
