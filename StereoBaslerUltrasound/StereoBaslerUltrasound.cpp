@@ -163,26 +163,26 @@ int main(int argc, char* argv[])
 				{
 					cntImagesNum++;
 
-					strFileName = root.string() + "L\\left" + to_string(cntImagesNum) + ".jpg";
+					strFileName = root.string() + "L\\left" + to_string(cntImagesNum) + ".bmp";
 					imwrite(strFileName, imL);
 
-					strFileName = root.string() + "R\\right" + to_string(cntImagesNum) + ".jpg";
+					strFileName = root.string() + "R\\right" + to_string(cntImagesNum) + ".bmp";
 					imwrite(strFileName, imR);
 
-					strFileName = root.string() + "US\\US" + to_string(cntImagesNum) + ".jpg";
+					strFileName = root.string() + "US\\US" + to_string(cntImagesNum) + ".bmp";
 					imwrite(strFileName, imUS);
 
 					cout << "+Images with index " << cntImagesNum << " has been collected" << endl;
 				}
 				else if (c == 'd')
 				{
-					strFileName = root.string() + "L\\left" + to_string(cntImagesNum) + ".jpg";
+					strFileName = root.string() + "L\\left" + to_string(cntImagesNum) + ".bmp";
 					remove((path)strFileName);
 
-					strFileName = root.string() + "R\\right" + to_string(cntImagesNum) + ".jpg";
+					strFileName = root.string() + "R\\right" + to_string(cntImagesNum) + ".bmp";
 					remove((path)strFileName);
 
-					strFileName = root.string() + "US\\US" + to_string(cntImagesNum) + ".jpg";
+					strFileName = root.string() + "US\\US" + to_string(cntImagesNum) + ".bmp";
 					remove((path)strFileName);
 
 					cout << "-Images with index " << cntImagesNum << " has been deleted" << endl;
