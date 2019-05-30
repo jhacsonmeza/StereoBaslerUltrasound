@@ -1,3 +1,5 @@
+#include "target.h"
+
 #include <pylon/PylonIncludes.h>
 #include <pylon/usb/BaslerUsbInstantCameraArray.h>
 #include <opencv2/opencv.hpp>
@@ -91,7 +93,6 @@ int main(int argc, char* argv[])
 
 		CPylonImage imgLeft, imgRight; // pylon images
 		Mat imL, imR, imUS, imLrs, imRrs, imUSrs, cat; // OpenCV matrices
-		vector<Mat> matrices; // vector of Mat for image concatenation
 		CImageFormatConverter formatConverter; // Object for image conversion to pylon images
 
 
@@ -133,18 +134,19 @@ int main(int argc, char* argv[])
 				formatConverter.Convert(imgRight, ptrGrabResultR);
 				imR = Mat(ptrGrabResultR->GetHeight(), ptrGrabResultR->GetWidth(), CV_8UC1, (uint8_t *)imgRight.GetBuffer());
 
-				// Convert US image to grayscale
-				cvtColor(imUS, imUS, COLOR_BGR2GRAY);
-
 
 				// Resize basler and US images for visualization purposes
 				resize(imL, imLrs, Size(620, 480));
 				resize(imR, imRrs, Size(620, 480));
 				resize(imUS, imUSrs, Size(620, 480));
 
+				// Detect target
+				detect(imLrs);
+				detect(imRrs);
+
 				// Concatenate three images
-				matrices = { imLrs, imRrs, imUSrs };
-				hconcat(matrices, cat);
+				Mat imgs[3] = { imLrs, imRrs, imUSrs };
+				hconcat(imgs, 3, cat);
 
 				// show images
 				imshow("Acquisition", cat);
