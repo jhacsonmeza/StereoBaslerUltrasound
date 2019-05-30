@@ -129,6 +129,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="StereoBaslerUltrasound.cpp" />
+    <ClCompile Include="target.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="target.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

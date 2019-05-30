@@ -18,5 +18,13 @@
     <ClCompile Include="StereoBaslerUltrasound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="target.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="target.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
