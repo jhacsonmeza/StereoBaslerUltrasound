@@ -19,29 +19,21 @@ int main(int argc, char* argv[])
 	path root = "F:\\StereoBaslerUltrasound\\acquisition\\";
 
 	if (!is_directory(root))
-	{
 		if (!create_directory(root))
 			return -1;
-	}
 
 	// If there are no paths to each source, create them
 	if (!is_directory(root / "L"))
-	{
 		if (!create_directory(root / "L"))
 			return -1;
-	}
 
 	if (!is_directory(root / "R"))
-	{
 		if (!create_directory(root / "R"))
 			return -1;
-	}
 
 	if (!is_directory(root / "US"))
-	{
 		if (!create_directory(root / "US"))
 			return -1;
-	}
 
 
 	// The exit code of the sample application.
@@ -66,12 +58,13 @@ int main(int argc, char* argv[])
 		// Create and attach all Pylon Devices.
 		for (size_t i = 0; i < cameras.GetSize(); ++i)
 		{
+			// Atach devices
 			cameras[i].Attach(tlFactory.CreateDevice(devices[i]));
 
-			cameras[i].Open();
+			cameras[i].Open(); // Open camera to configure it
 			cameras[i].ExposureAuto.SetValue(Basler_UsbCameraParams::ExposureAuto_Off);
 			cameras[i].ExposureTime.SetValue(20000);
-			cameras[i].Close();
+			cameras[i].Close(); // Close after configuration
 
 			// Print the model name of the camera.
 			cout << "Using device " << cameras[i].GetDeviceInfo().GetModelName() << endl;
@@ -99,7 +92,7 @@ int main(int argc, char* argv[])
 		CPylonImage imgLeft, imgRight; // pylon images
 		Mat imL, imR, imUS, imLrs, imRrs, imUSrs, cat; // OpenCV matrices
 		vector<Mat> matrices; // vector of Mat for image concatenation
-		CImageFormatConverter formatConverter;
+		CImageFormatConverter formatConverter; // Object for image conversion to pylon images
 
 
 		// Check which camera is R and which L to assign the correct camera index
@@ -117,7 +110,7 @@ int main(int argc, char* argv[])
 		// Set up window to show acquisition
 		namedWindow("Acquisition", WINDOW_NORMAL); resizeWindow("Acquisition", 620 * 3, 480);
 		// Start grabbing cameras
-		cameras.StartGrabbing(Pylon::GrabStrategy_LatestImageOnly, Pylon::GrabLoop_ProvidedByUser);
+		cameras.StartGrabbing(GrabStrategy_LatestImageOnly, GrabLoop_ProvidedByUser);
 
 
 		while (cameras.IsGrabbing())
