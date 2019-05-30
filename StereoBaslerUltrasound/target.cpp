@@ -8,6 +8,17 @@ using namespace std;
 using namespace cv;
 
 
+bool succeeds(const Mat1d& v, const Mat& ind)
+{
+	int suma = 0;
+	for (int i = 0; i < 3; i++)
+		if (v(ind.at<int>(i)) > 0.35)
+			suma++;
+
+	return suma == 0;
+}
+
+
 double median(InputArray v)
 {
 	vector<double> vec;
@@ -126,10 +137,12 @@ void detect(Mat& im, bool global_th, bool th_im)
 	merge(ch, 3, im); // Convert image to three channel
 
 	Rect lim;
-	for (int i = 0; i < 3; i++)
+	if (succeeds(v, ind))
 	{
-		lim = boundingRect(circ[ind.at<int>(i)]);
-		rectangle(im, lim, Scalar(0, 255, 0), 3);
+		for (int i = 0; i < 3; i++)
+		{
+			lim = boundingRect(circ[ind.at<int>(i)]);
+			rectangle(im, lim, Scalar(0, 255, 0), 3);
+		}
 	}
-	
 }
