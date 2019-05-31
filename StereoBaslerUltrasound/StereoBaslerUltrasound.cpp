@@ -135,14 +135,14 @@ int main(int argc, char* argv[])
 				imR = Mat(ptrGrabResultR->GetHeight(), ptrGrabResultR->GetWidth(), CV_8UC1, (uint8_t *)imgRight.GetBuffer());
 
 
+				// Detect target
+				detect(imL);
+				detect(imR);
+
 				// Resize basler and US images for visualization purposes
 				resize(imL, imLrs, Size(620, 480));
 				resize(imR, imRrs, Size(620, 480));
 				resize(imUS, imUSrs, Size(620, 480));
-
-				// Detect target
-				detect(imLrs);
-				detect(imRrs);
 
 				// Concatenate three images
 				Mat imgs[3] = { imLrs, imRrs, imUSrs };
