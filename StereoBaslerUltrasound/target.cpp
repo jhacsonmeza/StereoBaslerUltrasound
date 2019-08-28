@@ -68,14 +68,14 @@ void detect(Mat& im, bool global_th, bool th_im)
 	{
 		// Compute perimeter and approximate contour
 		perimeter = arcLength(cnt, true);
-		approxPolyDP(cnt, approx, 0.01*perimeter, true);
+		approxPolyDP(cnt, approx, 0.01 * perimeter, true);
 
 		// Compute area
 		area = contourArea(cnt);
 
 		// Check if approximated contour is stored with its area, perimeter
 		// and centroid
-		if ((approx.size() > 5) & (area > 30) & (area < 4000))
+		if ((approx.size() > 5) & (area > 30))
 		{
 			conts.push_back(cnt);
 			areas.push_back(area);
@@ -87,62 +87,70 @@ void detect(Mat& im, bool global_th, bool th_im)
 	}
 
 
-	// As targets are concentric circles, both circles have the same coordinate
-	// center, and distance between these centers should be zero
-	Mat1d d(c.rows - 1, 1);
-	for (int i = 0; i < c.rows - 1; i++)
-		d(i) = norm(c(i) - c(i + 1));
-
-	// Take the first 5 contours with smaller neighboring centers distances,
-	// which would be potential circles
-	Mat ind;
-	sortIdx(d, ind, SORT_EVERY_COLUMN + SORT_ASCENDING);
-	ind.convertTo(ind, CV_32F);
-	ind = ind.rowRange(0, 5);
-
-	remap(areas, areas, Mat::zeros(ind.size(), ind.type()), ind, INTER_LINEAR);
-	remap(perimeters, perimeters, Mat::zeros(ind.size(), ind.type()), ind, INTER_LINEAR);
-
-
-	// Evaluate circularity criteria. For a circle R = 1
-	Mat1d R = 4 * CV_PI * areas / (perimeters.mul(perimeters));
-
-	// Adjust a circle in the contours and save the radius
-	Point2f cen;
-	float radius;
-	Mat1d r(ind.rows, 1);
-	vector<vector<Point>> circ(ind.rows);
-	for (int i = 0; i < ind.rows; i++)
+	if (c.rows > 5)
 	{
-		circ[i] = conts[static_cast<size_t>(ind.at<float>(i))];
-		minEnclosingCircle(circ[i], cen, radius);
-		r(i) = radius;
-	}
+		// As targets are concentric circles, both circles have the same coordinate
+		// center, and distance between these centers should be zero
+		Mat1d d(c.rows - 1, 1);
+		for (int i = 0; i < c.rows - 1; i++)
+			d(i) = norm(c(i) - c(i + 1));
+
+		// Take the first 5 contours with smaller neighboring centers distances,
+		// which would be potential circles
+		Mat ind;
+		sortIdx(d, ind, SORT_EVERY_COLUMN + SORT_ASCENDING);
+		ind.convertTo(ind, CV_32F);
+		ind = ind.rowRange(0, 5);
+
+		remap(areas, areas, Mat::zeros(ind.size(), ind.type()), ind, INTER_LINEAR);
+		remap(perimeters, perimeters, Mat::zeros(ind.size(), ind.type()), ind, INTER_LINEAR);
 
 
-	// To take the three circles between the five contours, area, circularity
-	// and the adjusted radius in three of the five contours should have
-	// approximately the same values.
-	// Subtracting and dividing by the median in each feature measured and
-	// adding them, the three smaller values are the three circles.
-	Mat1d v = abs(median(areas) - areas) / median(areas) + \
-		abs(median(R) - R) / median(R) + abs(median(r) - r) / median(r);
+		// Evaluate circularity criteria. For a circle R = 1
+		Mat1d R = 4 * CV_PI * areas / (perimeters.mul(perimeters));
 
-	// Take the three smaller elements of v
-	sortIdx(v, ind, SORT_EVERY_COLUMN + SORT_ASCENDING);
-
-
-	// Draw bouding boxes in detections
-	Mat ch[3] = { im, im, im };
-	merge(ch, 3, im); // Convert image to three channel
-
-	Rect lim;
-	if (succeeds(v, ind))
-	{
-		for (int i = 0; i < 3; i++)
+		// Adjust a circle in the contours and save the radius
+		Point2f cen;
+		float radius;
+		Mat1d r(ind.rows, 1);
+		vector<vector<Point>> circ(ind.rows);
+		for (int i = 0; i < ind.rows; i++)
 		{
-			lim = boundingRect(circ[ind.at<int>(i)]);
-			rectangle(im, lim, Scalar(0, 255, 0), 3);
+			circ[i] = conts[static_cast<size_t>(ind.at<float>(i))];
+			minEnclosingCircle(circ[i], cen, radius);
+			r(i) = radius;
 		}
+
+
+		// To take the three circles between the five contours, area, circularity
+		// and the adjusted radius in three of the five contours should have
+		// approximately the same values.
+		// Subtracting and dividing by the median in each feature measured and
+		// adding them, the three smaller values are the three circles.
+		Mat1d v = abs(median(areas) - areas) / median(areas) + \
+			abs(median(R) - R) / median(R) + abs(median(r) - r) / median(r);
+
+		// Take the three smaller elements of v
+		sortIdx(v, ind, SORT_EVERY_COLUMN + SORT_ASCENDING);
+
+
+		// Draw bouding boxes in detections
+		Mat ch[3] = { im, im, im };
+		merge(ch, 3, im); // Convert image to three channel
+
+		Rect lim;
+		if (succeeds(v, ind))
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				lim = boundingRect(circ[ind.at<int>(i)]);
+				rectangle(im, lim, Scalar(0, 255, 0), 3);
+			}
+		}
+	}
+	else
+	{
+		Mat ch[3] = { im, im, im };
+		merge(ch, 3, im);
 	}
 }
