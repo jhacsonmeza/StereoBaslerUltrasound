@@ -18,7 +18,7 @@ using namespace std::filesystem;
 int main(int argc, char* argv[])
 {
 	// Root path to store images
-	path root = "F:\\StereoBaslerUltrasound\\acquisition\\";
+	path root = "H:\\3DfUS\\Acquisition\\StereoBaslerUltrasound\\acquisition\\";
 
 	if (!is_directory(root))
 		if (!create_directory(root))
