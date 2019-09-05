@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
 		// Start grabbing cameras
 		cameras.StartGrabbing(GrabStrategy_LatestImageOnly, GrabLoop_ProvidedByUser);
 
-
+		bool det = false;
 		while (cameras.IsGrabbing())
 		{
 			// Basler frame capture
@@ -135,9 +135,18 @@ int main(int argc, char* argv[])
 				imR = Mat(ptrGrabResultR->GetHeight(), ptrGrabResultR->GetWidth(), CV_8UC1, (uint8_t *)imgRight.GetBuffer());
 
 
-				// Detect target
-				detect(imL);
-				detect(imR);
+				if (det)
+				{
+					// Detect target
+					detect(imL);
+					detect(imR);
+				}
+				else
+				{
+					// Convert US image to grayscale
+					cvtColor(imUS, imUS, COLOR_BGR2GRAY);
+				}
+				
 
 				// Resize basler and US images for visualization purposes
 				resize(imL, imLrs, Size(620, 480));
@@ -184,6 +193,8 @@ int main(int argc, char* argv[])
 
 					cntImagesNum--;
 				}
+				else if (c == 't')
+					det = !det;
 			}
 		}
 
