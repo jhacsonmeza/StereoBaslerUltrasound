@@ -37,6 +37,10 @@ int main(int argc, char* argv[])
 		if (!create_directory(root / "US"))
 			return -1;
 
+	if (!is_directory(root / "UScrop"))
+		if (!create_directory(root / "UScrop"))
+			return -1;
+
 
 	// The exit code of the sample application.
 	int exitCode = 0;
@@ -176,6 +180,9 @@ int main(int argc, char* argv[])
 					strFileName = root.string() + "US\\US" + to_string(cntImagesNum) + ".bmp";
 					imwrite(strFileName, imUS);
 
+					strFileName = root.string() + "UScrop\\US" + to_string(cntImagesNum) + ".bmp";
+					imwrite(strFileName, imUS(Rect(247,67,322,409)));
+
 					cout << "+Images with index " << cntImagesNum << " has been collected" << endl;
 				}
 				else if (c == 'd')
@@ -187,6 +194,9 @@ int main(int argc, char* argv[])
 					remove((path)strFileName);
 
 					strFileName = root.string() + "US\\US" + to_string(cntImagesNum) + ".bmp";
+					remove((path)strFileName);
+
+					strFileName = root.string() + "UScrop\\US" + to_string(cntImagesNum) + ".bmp";
 					remove((path)strFileName);
 
 					cout << "-Images with index " << cntImagesNum << " has been deleted" << endl;
