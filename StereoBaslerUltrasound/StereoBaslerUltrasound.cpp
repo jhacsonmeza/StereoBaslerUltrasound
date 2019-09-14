@@ -103,9 +103,9 @@ int main(int argc, char* argv[])
 		// Check which camera is R and which L to assign the correct camera index
 		for (int i = 0; i < cameras.GetSize(); i++)
 		{
-			if (cameras[i].GetDeviceInfo().GetSerialNumber() == "22151646")
+			if (cameras[i].GetDeviceInfo().GetSerialNumber() == "21953150")
 				iR = i;
-			else if (cameras[i].GetDeviceInfo().GetSerialNumber() == "21953150")
+			else if (cameras[i].GetDeviceInfo().GetSerialNumber() == "22151646")
 				iL = i;
 		}
 
