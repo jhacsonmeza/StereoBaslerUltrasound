@@ -18,7 +18,7 @@ using namespace std::filesystem;
 int main(int argc, char* argv[])
 {
 	// Root path to store images
-	path root = "H:\\3DfUS\\Acquisition\\StereoBaslerUltrasound\\acquisition\\";
+	path root = "J:\\Freehand US\\Acquisition\\StereoBaslerUltrasound\\acquisition\\";
 
 	if (!is_directory(root))
 		if (!create_directory(root))
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 
 
 		// Create and open object to handle US machine acquisition
-		VideoCapture cap(0);
+		VideoCapture cap(0, CAP_DSHOW);
 		if (!cap.isOpened())  // check if we succeeded
 			return -1;
 		// Set US video resolution
