@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
 					imwrite(strFileName, imUS);
 
 					strFileName = root.string() + "UScrop\\US" + to_string(cntImagesNum) + ".bmp";
-					imwrite(strFileName, imUS(Rect(247,67,322,409)));
+					imwrite(strFileName, imUS(Rect(247,67,321,408)));
 
 					cout << "+Images with index " << cntImagesNum << " has been collected" << endl;
 				}
